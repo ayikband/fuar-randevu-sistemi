@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fuar Randevu Sistemi</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F7FA;
+      --surface: #FFFFFF;
+      --surface-hover: #EDF2F7;
+      --primary: #132F4F;
+      --primary-hover: #165E8A;
+      --accent: #72B2E2;
+      --text: #132F4F;
+      --text-muted: rgba(19, 47, 79, 0.65);
+      --border: #E2E8F0;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+      --success: #27C485;
+      --warning: #F1C40F;
+      --danger: #E74C3C;
+
+      --font-family: 'Helvetica', 'Inter', system-ui, -apple-system, sans-serif;
+      --radius: 12px;
+      --transition: 0.2s ease;
+
+      /* Mapping old variables to new palette for compatibility */
+      --blue: var(--primary);
+      --blue-dark: var(--primary-hover);
+      --blue-light: var(--accent);
+      --blue-dim: rgba(31, 118, 172, 0.12);
+      /* Primary with opacity */
+      --dark: var(--bg);
+      --dark2: var(--surface);
+      --dark3: var(--surface);
+      /* Could also be #FAFCFF */
+      --dark4: var(--surface-hover);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(26, 115, 197, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(26, 115, 197, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 820px;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      color: var(--blue-dark);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .header h1 {
+      font-family: var(--font-family);
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+      background: linear-gradient(135deg, var(--primary-hover) 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-top: 10px;
+      font-weight: 300;
+    }
+
+    /* Steps */
+    .steps-bar {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 36px;
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .step-item {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      position: relative;
+    }
+
+    .step-item.active {
+      background: var(--blue-dim);
+      color: var(--blue-light);
+      border: 1px solid var(--border);
+    }
+
+    .step-item.done {
+      color: var(--blue);
+      cursor: pointer;
+    }
+
+    .step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--dark4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid currentColor;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .step-item.active .step-num {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .step-item.done .step-num {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    .step-label {
+      display: none;
+    }
+
+    @media(min-width: 520px) {
+      .step-label {
+        display: block;
+      }
+    }
+
+    /* Card */
+    .card {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .card-inner {
+      padding: clamp(20px, 5vw, 40px);
+    }
+
+    /* Panels */
+    .panel {
+      display: none;
+      animation: slideIn 0.35s ease;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .panel-title {
+      font-family: var(--font-family);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .panel-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
+
+    /* Grid options */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+
+    .rep-card {
+      padding: 16px;
+    }
+
+    .rep-photo-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      margin: 0 auto;
+      background: var(--dark4);
+      flex-shrink: 0;
+    }
+
+    .rep-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .rep-card .option-name {
+      text-align: center;
+    }
+
+    .rep-card .option-detail {
+      text-align: center;
+    }
+
+    .option-card {
+      background: var(--dark3);
+      border: 1.5px solid rgba(26, 115, 197, 0.1);
+      border-radius: var(--radius);
+      padding: 18px 16px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .option-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--blue-dim);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .option-card:hover {
+      border-color: var(--border);
+      transform: translateY(-2px);
+    }
+
+    .option-card:hover::after {
+      opacity: 1;
+    }
+
+    .option-card.selected {
+      border-color: var(--blue);
+      background: var(--dark3);
+    }
+
+    .option-card.selected::after {
+      opacity: 1;
+    }
+
+    .option-card .check {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #fff;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .option-card.selected .check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .option-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+      display: block;
+      position: relative;
+      z-index: 1;
+    }
+
+    .option-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      position: relative;
+      z-index: 1;
+      line-height: 1.3;
+    }
+
+    .option-detail {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 300;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Calendar */
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .cal-title {
+      font-family: var(--font-family);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .cal-nav {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      color: var(--blue);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .cal-nav:hover {
+      background: var(--blue-dim);
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .cal-day-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 0;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+      background: var(--dark3);
+      color: var(--text);
+    }
+
+    .cal-day:hover:not(.empty):not(.past):not(.full) {
+      border-color: var(--blue);
+      color: var(--blue-light);
+    }
+
+    .cal-day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .cal-day.past {
+      opacity: 0.25;
+      cursor: not-allowed;
+    }
+
+    .cal-day.full {
+      opacity: 0.35;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .cal-day.selected {
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      border-color: var(--blue);
+    }
+
+    .cal-day.today {
+      border-color: var(--blue);
+      color: var(--blue-light);
+    }
+
+    .avail-dot {
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .cal-day.full .avail-dot {
+      background: #e55;
+    }
+
+    /* Time slots */
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .time-slot {
+      background: var(--dark3);
+      border: 1.5px solid rgba(26, 115, 197, 0.1);
+      border-radius: 8px;
+      padding: 10px 6px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text);
+    }
+
+    .time-slot:hover:not(.taken) {
+      border-color: var(--border);
+      color: var(--blue-light);
+    }
+
+    .time-slot.taken {
+      opacity: 0.3;
+      cursor: not-allowed;
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .time-slot.selected {
+      background: var(--blue-dim);
+      border-color: var(--blue);
+      color: var(--blue-light);
+      font-weight: 700;
+    }
+
+    .slot-cap {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 300;
+    }
+
+    .time-slot.selected .slot-cap {
+      color: var(--blue);
+    }
+
+    /* Form fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--dark3);
+      border: 1.5px solid rgba(26, 115, 197, 0.15);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+      color: var(--text);
+      font-family: var(--font-family);
+      font-size: 15px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--blue);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media(max-width: 480px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Summary */
+    .summary-box {
+      background: var(--dark3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(26, 115, 197, 0.08);
+      font-size: 14px;
+      gap: 12px;
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-key {
+      color: var(--text-muted);
+      font-weight: 400;
+      flex-shrink: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding-top: 2px;
+    }
+
+    .summary-val {
+      font-weight: 600;
+      color: var(--text);
+      text-align: right;
+    }
+
+    .summary-val.gold {
+      color: var(--blue);
+    }
+
+    .summary-val.blue {
+      color: var(--blue);
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(26, 115, 197, 0.1);
+    }
+
+    .btn {
+      padding: 13px 28px;
+      border-radius: var(--radius);
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.25s;
+      border: none;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid rgba(26, 115, 197, 0.2);
+      color: var(--text-muted);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(26, 115, 197, 0.3);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Success */
+    .success-screen {
+      text-align: center;
+      padding: 60px 40px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(26, 115, 197, 0.12);
+      border: 2px solid rgba(26, 115, 197, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 24px;
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-screen h2 {
+      font-family: var(--font-family);
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .success-screen p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .conf-code {
+      display: inline-block;
+      background: var(--blue-dim);
+      border: 1px solid var(--border);
+      color: var(--blue-dark);
+      font-family: 'Courier New', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    /* Brand pills */
+    .brand-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--dark3);
+      border: 1.5px solid rgba(26, 115, 197, 0.12);
+      border-radius: 100px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 4px;
+    }
+
+    .brand-pill:hover {
+      border-color: var(--border);
+    }
+
+    .brand-pill.selected {
+      background: var(--blue-dim);
+      border-color: var(--blue);
+      color: var(--blue-light);
+    }
+
+
+    .brand-logo-card {
+      position: relative;
+      background: var(--dark3);
+      border: 2px solid rgba(26, 115, 197, 0.12);
+      border-radius: var(--radius);
+      padding: 14px 12px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+
+    .brand-logo-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 12px rgba(26, 115, 197, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .brand-logo-card.selected {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+
+    .brand-logo-card .brand-check {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .brand-logo-card.selected .brand-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .brand-logo-img {
+      height: 48px;
+      width: auto;
+      max-width: 130px;
+      object-fit: contain;
+      background: transparent;
+    }
+
+    .brand-logo-name {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .brand-logo-card.selected .brand-logo-name {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .brand-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 20px;
+    }
+
+    .section-divider span {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(26, 115, 197, 0.1);
+    }
+
+    .info-tag {
+      background: rgba(26, 115, 197, 0.1);
+      border: 1px solid rgba(26, 115, 197, 0.2);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.5px;
+    }
+
+    .info-tag.warn {
+      background: rgba(230, 180, 60, 0.1);
+      border-color: rgba(230, 180, 60, 0.2);
+      color: #E6B43C;
+    }
+
+    .no-slots {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .no-slots .emoji {
+      font-size: 32px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 28px;
+      color: var(--text-muted);
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    /* ─── LANDING SCREEN ────────────────────────────────────── */
+    #landing-screen {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+      padding: 4rem 2rem;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      animation: fadeIn 0.4s ease-out;
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+      z-index: 10;
+    }
+
+    .landing-logo {
+      margin-bottom: 1rem;
+    }
+
+    .landing-logo img {
+      height: 90px;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .landing-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .landing-header h1 {
+      font-family: var(--font-family);
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+      letter-spacing: -1px;
+    }
+
+    .landing-header p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .landing-options {
+      display: flex;
+      gap: 2rem;
+      width: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .landing-options {
+        flex-direction: column;
+      }
+
+      .landing-header h1 {
+        font-size: 36px;
+      }
+    }
+
+    .landing-card {
+      flex: 1;
+      background: var(--surface);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .landing-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(31, 118, 172, 0.12);
+      border-color: var(--primary);
+    }
+
+    .landing-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: var(--primary);
+      transition: var(--transition);
+    }
+
+    .landing-card:hover .landing-icon {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .landing-card h2 {
+      font-family: var(--font-family);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+      transition: var(--transition);
+    }
+
+    .landing-card:hover h2 {
+      color: var(--primary);
+    }
+
+    .landing-card p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ─── SEMINAR SCREEN ────────────────────────────────────── */
+    #seminar-screen {
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .seminar-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+      scrollbar-width: none;
+      /* Firefox */
+    }
+
+    .seminar-tabs::-webkit-scrollbar {
+      display: none;
+      /* Chrome/Safari */
+    }
+
+    .seminar-tab {
+      padding: 12px 24px;
+      border-radius: 30px;
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .seminar-tab:hover {
+      border-color: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .seminar-tab.active {
+      background: var(--blue);
+      color: var(--dark2);
+      border-color: var(--blue);
+    }
+
+    .seminar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .seminar-card {
+      background: var(--dark2);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border);
+      align-items: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .seminar-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    @media (max-width: 600px) {
+      .seminar-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+    }
+
+    .seminar-time {
+      font-weight: 600;
+      color: var(--blue);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 18px;
+      min-width: 80px;
+      background: var(--blue-dim);
+      padding: 8px 16px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .seminar-speaker-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--dark4);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .seminar-info {
+      flex: 1;
+    }
+
+    .seminar-title {
+      font-family: var(--font-family);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .seminar-speaker-name {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .seminar-speaker-title {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .seminar-company-logo {
+      max-width: 120px;
+      max-height: 50px;
+      object-fit: contain;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function () {
+      emailjs.init("c5HWXFi6tiQShhyU1");
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="noise"></div>
+
+  <!-- ─── LANDING SCREEN ───────────────────────────────────── -->
+  <div id="landing-screen">
+    <div class="landing-logo">
+      <img src="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg" alt="Ayık Band">
+    </div>
+    <div class="landing-header">
+      <h1>Fuar Ziyaret Randevunuzu Oluşturun</h1>
+      <p>Stant alanımızda sizi özel olarak ağırlamak veya seminerlerimize katılmak için seçiminizi yapın.</p>
+    </div>
+    <div class="landing-options">
+      <div class="landing-card" onclick="showScreen('appointment-screen')">
+        <div class="landing-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <h2>Stant Randevu Sistemi</h2>
+        <p>Uzman ekibimizle fuar alanında birebir görüşme randevusu alın.</p>
+      </div>
+      <div class="landing-card" onclick="showScreen('seminar-screen')">
+        <div class="landing-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="M8 14h.01"></path>
+            <path d="M12 14h.01"></path>
+            <path d="M16 14h.01"></path>
+            <path d="M8 18h.01"></path>
+            <path d="M12 18h.01"></path>
+            <path d="M16 18h.01"></path>
+          </svg>
+        </div>
+        <h2>Seminer Takvimi</h2>
+        <p>4 günlük seminer ve sunum programımızı inceleyin.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SEMINAR SCREEN ───────────────────────────────────── -->
+  <div id="seminar-screen" style="display:none;">
+    <div class="container" style="max-width: 800px; position:relative;">
+      <div class="header" style="text-align:center; position:relative;">
+        <button class="btn btn-outline" style="position:absolute; left:0; top:0; padding: 8px 16px; font-size:14px;"
+          onclick="showScreen('landing-screen')">← Geri</button>
+        <div class="header-badge" style="margin: 0 auto 16px;">
+          <span>📅</span>
+          <span>Seminer Takvimi</span>
+        </div>
+        <h1>Fuar Seminer Programı</h1>
+        <p>Sektör profesyonellerinden ilham verici sunumlar</p>
+      </div>
+      <div class="seminar-tabs" id="seminar-tabs">
+        <!-- Tabs generated via JS -->
+      </div>
+      <div class="seminar-list" id="seminar-list">
+        <!-- Seminars generated via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── APPOINTMENT SCREEN ───────────────────────────────── -->
+  <div id="appointment-screen" style="display:none;">
+    <div class="container">
+      <div class="header" style="position:relative;">
+        <button class="btn btn-outline" style="position:absolute; left:0; top:0; padding: 8px 16px; font-size:14px;"
+          onclick="showScreen('landing-screen')">← Geri</button>
+        <div class="header-badge" style="margin: 0 auto 16px;">
+          <span>📅</span>
+          <span>Stant Randevu Sistemi</span>
+        </div>
+        <h1>Fuar Ziyaret Randevunuzu<br>Oluşturun</h1>
+        <p>Stant alanımızda sizi özel olarak ağırlamak için randevunuzu ayarlayın.</p>
+      </div>
+
+      <!-- Steps -->
+      <div class="steps-bar">
+        <div class="step-item active" data-step="1" onclick="goToStep(1)">
+          <div class="step-num">1</div>
+          <span class="step-label">Temsilci</span>
+        </div>
+        <div class="step-item" data-step="2" onclick="goToStep(2)">
+          <div class="step-num">2</div>
+          <span class="step-label">Tarih</span>
+        </div>
+        <div class="step-item" data-step="3" onclick="goToStep(3)">
+          <div class="step-num">3</div>
+          <span class="step-label">Saat</span>
+        </div>
+        <div class="step-item" data-step="4" onclick="goToStep(4)">
+          <div class="step-num">4</div>
+          <span class="step-label">Marka</span>
+        </div>
+        <div class="step-item" data-step="5" onclick="goToStep(5)">
+          <div class="step-num">5</div>
+          <span class="step-label">Bilgiler</span>
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div class="card">
+        <div class="card-inner">
+
+          <!-- PANEL 1: Temsilci -->
+          <div class="panel active" id="panel-1">
+            <div class="panel-title">Bölge Satış Müdürünüzü Seçin</div>
+            <div class="panel-sub">Görüşmek istediğiniz temsilciyi seçin</div>
+            <div class="grid-2" id="rep-grid"></div>
+            <div class="btn-row">
+              <button class="btn btn-primary" id="btn1" disabled onclick="nextStep(2)">Devam Et →</button>
+            </div>
+          </div>
+
+          <!-- PANEL 2: Tarih -->
+          <div class="panel" id="panel-2">
+            <div class="panel-title">Tarih Seçin</div>
+            <div class="panel-sub">Fuar süresince müsait tarihlerden birini seçin</div>
+            <div class="cal-header">
+              <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
+              <div class="cal-title" id="cal-month-title"></div>
+              <button class="cal-nav" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="btn-row">
+              <button class="btn btn-ghost" onclick="prevStep(1)">← Geri</button>
+              <button class="btn btn-primary" id="btn2" disabled onclick="nextStep(3)">Devam Et →</button>
+            </div>
+          </div>
+
+          <!-- PANEL 3: Saat -->
+          <div class="panel" id="panel-3">
+            <div class="panel-title">Saat Seçin</div>
+            <div class="panel-sub" id="time-sub">Seçilen tarihe ait müsait saatler</div>
+            <div class="time-grid" id="time-grid"></div>
+            <div class="btn-row">
+              <button class="btn btn-ghost" onclick="prevStep(2)">← Geri</button>
+              <button class="btn btn-primary" id="btn3" disabled onclick="nextStep(4)">Devam Et →</button>
+            </div>
+          </div>
+
+          <!-- PANEL 4: Marka -->
+          <div class="panel" id="panel-4">
+            <div class="panel-title">İlgilendiğiniz Markaları Seçin</div>
+            <div class="panel-sub">Bir veya birden fazla marka seçebilirsiniz</div>
+            <div id="brand-grid"
+              style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-top:4px;">
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-ghost" onclick="prevStep(3)">← Geri</button>
+              <button class="btn btn-primary" id="btn4" disabled onclick="nextStep(5)">Devam Et →</button>
+            </div>
+          </div>
+
+          <!-- PANEL 5: Kişisel Bilgiler -->
+          <div class="panel" id="panel-5">
+            <div class="panel-title">İletişim Bilgileriniz</div>
+            <div class="panel-sub">Randevunuzu tamamlamak için bilgilerinizi girin</div>
+
+            <div class="summary-box" id="mini-summary"></div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Ad</label>
+                <input class="form-input" type="text" id="f-name" placeholder="Adınız" oninput="checkForm()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Soyad</label>
+                <input class="form-input" type="text" id="f-surname" placeholder="Soyadınız" oninput="checkForm()">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Firma / Kurum</label>
+                <input class="form-input" type="text" id="f-company" placeholder="Firma adı" oninput="checkForm()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Görev / Ünvan</label>
+                <input class="form-input" type="text" id="f-title" placeholder="Unvanınız" oninput="checkForm()">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">E-posta</label>
+                <input class="form-input" type="email" id="f-email" placeholder="ornek@firma.com" oninput="checkForm()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Telefon</label>
+                <input class="form-input" type="tel" id="f-phone" placeholder="+90 5__ ___ __ __" oninput="checkForm()">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Notlar (İsteğe Bağlı)</label>
+              <textarea class="form-input" id="f-note" rows="3"
+                placeholder="Görüşmek istediğiniz konular, sorularınız..."></textarea>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn btn-ghost" onclick="prevStep(4)">← Geri</button>
+              <button class="btn btn-primary" id="btn5" disabled onclick="submitForm()">Randevuyu Onayla ✓</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="footer">Güvenli Randevu Sistemi &nbsp;·&nbsp; Verileriniz gizli tutulur</div>
+    </div>
+
+    <!-- SUCCESS MODAL (hidden) -->
+    <div id="success-overlay"
+      style="display:none; position:fixed; inset:0; background:rgba(13,43,78,0.7); z-index:100; display:none; align-items:center; justify-content:center; padding:20px;">
+      <div
+        style="background:var(--dark2); border:1px solid var(--border); border-radius:20px; max-width:480px; width:100%;">
+        <div class="success-screen">
+          <div class="success-icon">✓</div>
+          <h2>Randevunuz Oluşturuldu!</h2>
+          <p>Onay detayları e-posta adresinize gönderilmiştir. Sizi stantımızda ağırlamaktan memnuniyet duyacağız.</p>
+          <div class="conf-code" id="conf-code">—</div>
+          <div id="success-detail" style="font-size:14px; color:var(--text-muted); line-height:1.8;"></div>
+          <button class="btn btn-primary" style="margin-top:28px;" onclick="resetAll()">Yeni Randevu Oluştur</button>
+        </div>
+      </div>
+    </div>
+  </div> <!-- END APPOINTMENT SCREEN -->
+
+  <script>
+    // ─── DATA ───────────────────────────────────────────────
+    const PHOTOS = {
+      'r1': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-2.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r2': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/2.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r3': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-3.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r4': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-tasarim-1.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r5': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-5.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r6': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r7': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/8.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r8': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-6.png'  // Fotoğraf URL'sini buraya yapıştırın
+    };
+
+    const REPS = [
+      { id: 'r1', name: 'Nasuh Durmaz', region: 'Bölge Satış Müdürü', title: 'Marmara & Ege', phone: '+90 531 463 72 02', email: 'nasuh@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r2', name: 'Kamil Şerefoğlu', region: 'Bölge Satış Müdürü', title: 'Akdeniz', phone: '+90 539 928 56 66', email: 'kamil@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r3', name: 'Korcan Türkmen', region: 'Bölge Satış Müdürü', title: 'İç Anadolu & Karadeniz', phone: '+90 549 104 10 03', email: 'korcan@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r4', name: 'Atakan Ilgaz', region: 'İş Geliştirme Müdürü', title: '', phone: '+90 532 255 74 46', email: 'ertunc@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r5', name: 'Huriye Yaman', region: 'Teklif & Satış Destek Müdürü', title: '', phone: '+90 530 351 45 83', email: 'huriye@ayik.com.tr', icon: '👩‍💼' },
+      { id: 'r6', name: 'Cengizhan İnli', region: 'Teknik Lider', title: '', phone: '+90 539 701 25 33', email: 'cengizhan@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r7', name: 'Eren Saka', region: 'Uygulama Mühendisi', title: '', phone: '+90 533 314 15 52', email: 'eren@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r8', name: 'Ali Kaya', region: 'Servis Mühendisi', title: '', phone: '+90 542 367 16 77', email: 'ali@ayik.com.tr', icon: '👨‍💼' },
+    ];
+
+    const BRAND_LOGOS = {
+      'fenner_dunlop': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/fenner-dunlop.png', // Logo URL'sini buraya yapıştırın
+      'rulmeca': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/rulmeca.png', // Logo URL'sini buraya yapıştırın
+      'domite': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/domite.png', // Logo URL'sini buraya yapıştırın
+      'roxon': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/roxon.png', // Logo URL'sini buraya yapıştırın
+      'inbi': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/INBI-scaled.png', // Logo URL'sini buraya yapıştırın
+      'docdust': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/logo_docdust_-scaled.png', // Logo URL'sini buraya yapıştırın
+      'polysur': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/polysur.png', // Logo URL'sini buraya yapıştırın
+      'beltsiflex': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/beltsiflex.png', // Logo URL'sini buraya yapıştırın
+      'argonics': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/argonics.png', // Logo URL'sini buraya yapıştırın
+      'devcon': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Devcon-product-page.png', // Logo URL'sini buraya yapıştırın
+      'trelleborg': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/trelleborg.png', // Logo URL'sini buraya yapıştırın
+      'almex': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/ALMEX.png' // Logo URL'sini buraya yapıştırın
+    };
+
+    const BRANDS = [
+      { id: 'fenner_dunlop', name: 'Fenner Dunlop' },
+      { id: 'rulmeca', name: 'Rulmeca' },
+      { id: 'domite', name: 'Domite' },
+      { id: 'roxon', name: 'Roxon' },
+      { id: 'inbi', name: 'INBI Solutions' },
+      { id: 'docdust', name: 'DocDust' },
+      { id: 'polysur', name: 'Polysur' },
+      { id: 'beltsiflex', name: 'Beltsiflex' },
+      { id: 'argonics', name: 'Argonics' },
+      { id: 'devcon', name: 'Devcon' },
+      { id: 'trelleborg', name: 'Trelleborg' },
+      { id: 'almex', name: 'Almex Group' },
+    ];
+
+    // Fuar tarihleri: 8-11 Nisan 2026
+    const FAIR_START = new Date(2026, 3, 8);  // April 8
+    const FAIR_END = new Date(2026, 3, 11); // April 11
+
+    let TAKEN_SLOTS = {}; // Will be populated from Google Sheets
+    function takenKey(repName, dateStr) { return `${repName}_${dateStr}`; }
+
+    // ─── GOOGLE SCRIPT URL ──────────────────────────────────
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHMvixYePJ1AWhcBJRWBBl5i7S5aPRwLEzw-FD3ryEVyP1A_0WtXAMbyJe_Vfq3wqZpw/exec';
+
+    async function fetchTakenSlots() {
+      try {
+        const response = await fetch(SCRIPT_URL);
+        const bookedSlots = await response.json();
+
+        // Reset TAKEN_SLOTS
+        TAKEN_SLOTS = {};
+
+        bookedSlots.forEach(slot => {
+          if (slot.rep_name && slot.date && slot.time) {
+            // Robustly parse the date, which might be a full string like "Wed Apr 08 2026..."
+            let dateStr = String(slot.date);
+            const d = new Date(slot.date);
+            if (!isNaN(d.getTime())) {
+              dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            } else if (dateStr.includes('T')) {
+              dateStr = dateStr.split('T')[0];
+            }
+
+            const k = takenKey(slot.rep_name, dateStr);
+            if (!TAKEN_SLOTS[k]) TAKEN_SLOTS[k] = [];
+
+            // Robustly parse the time, which might be "Sat Dec 30 1899 11:30:00 GMT+0156..."
+            let timeStr = String(slot.time);
+            const timeMatch = timeStr.match(/(\d{2}:\d{2})/);
+            if (timeMatch) {
+              timeStr = timeMatch[1];
+            }
+
+            TAKEN_SLOTS[k].push(timeStr);
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching slots:", error);
+      }
+    }
+
+    function generateAllSlots() {
+      const slots = [];
+      for (let h = 9; h <= 18; h++) {
+        slots.push({ time: `${h.toString().padStart(2, '0')}:00` });
+        if (h < 18) slots.push({ time: `${h.toString().padStart(2, '0')}:30` });
+      }
+      return slots;
+    }
+
+    // ─── STATE ──────────────────────────────────────────────
+    let state = {
+      step: 1,
+      rep: null,
+      date: null,
+      time: null,
+      brands: [],
+      calYear: 2026,
+      calMonth: 3, // April (0-indexed)
+    };
+
+    // ─── INIT ────────────────────────────────────────────────
+    async function init() {
+      renderReps();
+      renderCalendar();
+      renderBrands();
+      showScreen('landing-screen');
+      // Fetch taken slots in the background when the app loads
+      await fetchTakenSlots();
+    }
+
+    // ─── REPS ────────────────────────────────────────────────
+    function renderReps() {
+      const g = document.getElementById('rep-grid');
+      g.innerHTML = REPS.map(r => `
+    <div class="option-card rep-card" data-id="${r.id}" onclick="selectRep('${r.id}')">
+      <div class="check">&#10003;</div>
+      <div class="rep-photo-wrap">
+        <img class="rep-photo" src="${PHOTOS[r.id]}" alt="${r.name}">
+      </div>
+      <div class="option-name" style="margin-top:10px;">${r.name}</div>
+      <div class="option-detail" style="font-size:11px;line-height:1.6;">
+        <span style="color:var(--blue);font-weight:600;">${r.region}</span><br>
+        <span>${r.title}</span>
+      </div>
+    </div>
+  `).join('');
+    }
+
+    function selectRep(id) {
+      state.rep = id;
+      document.querySelectorAll('#rep-grid .option-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.id === id);
+      });
+      document.getElementById('btn1').disabled = false;
+      // reset downstream
+      state.date = null; state.time = null; state.brands = [];
+      TAKEN_SLOTS; // keep cache
+    }
+
+    // ─── CALENDAR ────────────────────────────────────────────
+    function renderCalendar() {
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+      document.getElementById('cal-month-title').textContent =
+        `${months[state.calMonth]} ${state.calYear}`;
+
+      const first = new Date(state.calYear, state.calMonth, 1);
+      const daysInMonth = new Date(state.calYear, state.calMonth + 1, 0).getDate();
+      let startDay = first.getDay(); // 0=Sun
+      startDay = (startDay + 6) % 7; // Mon start
+
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+
+      let html = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
+        .map(d => `<div class="cal-day-name">${d}</div>`).join('');
+
+      for (let i = 0; i < startDay; i++) html += `<div class="cal-day empty"></div>`;
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dt = new Date(state.calYear, state.calMonth, d);
+        const inFair = dt >= FAIR_START && dt <= FAIR_END;
+        const isPast = dt < today;
+        const dateStr = `${state.calYear}-${String(state.calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isSelected = state.date === dateStr;
+        const isToday = dt.getTime() === today.getTime();
+
+        const rep = REPS.find(r => r.id === state.rep);
+        let taken = (rep && state.date) ? (TAKEN_SLOTS[takenKey(rep.name, dateStr)] || []) : [];
+        const allSlots = generateAllSlots();
+        const isFull = inFair && !isPast && taken.length >= allSlots.length;
+
+        let cls = 'cal-day';
+        if (!inFair || isPast) cls += ' past';
+        else if (isFull) cls += ' full';
+        if (isSelected) cls += ' selected';
+        if (isToday && !isSelected) cls += ' today';
+
+        const dot = (inFair && !isPast) ?
+          `<div class="avail-dot" style="${isFull ? 'background:#e55' : ''}"></div>` : '';
+
+        html += `<div class="${cls}" onclick="selectDate('${dateStr}', ${inFair && !isPast && !isFull})">${d}${dot}</div>`;
+      }
+
+      document.getElementById('cal-grid').innerHTML = html;
+    }
+
+    function changeMonth(dir) {
+      state.calMonth += dir;
+      if (state.calMonth > 11) { state.calMonth = 0; state.calYear++; }
+      if (state.calMonth < 0) { state.calMonth = 11; state.calYear--; }
+      renderCalendar();
+    }
+
+    function selectDate(dateStr, valid) {
+      if (!valid) return;
+      state.date = dateStr;
+      state.time = null;
+      document.getElementById('btn2').disabled = false;
+      renderCalendar();
+    }
+
+    // ─── TIME SLOTS ──────────────────────────────────────────
+    function renderTimeSlots() {
+      if (!state.date || !state.rep) return;
+      const rep = REPS.find(r => r.id === state.rep);
+      const taken = TAKEN_SLOTS[takenKey(rep.name, state.date)] || [];
+      const allSlots = generateAllSlots();
+      const [y, m, d] = state.date.split('-');
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+      document.getElementById('time-sub').textContent =
+        `${parseInt(d)} ${months[parseInt(m) - 1]} ${y} — müsait saatler`;
+
+      const avail = allSlots.filter(s => !taken.includes(s.time));
+      if (avail.length === 0) {
+        document.getElementById('time-grid').innerHTML =
+          `<div class="no-slots"><span class="emoji">😔</span>Bu tarih için müsait saat kalmadı. Lütfen başka bir tarih seçin.</div>`;
+        return;
+      }
+
+      document.getElementById('time-grid').innerHTML = allSlots.map(s => {
+        const isTaken = taken.includes(s.time);
+        const isSelected = state.time === s.time;
+        const cap = isTaken ? 'Dolu' : 'Müsait';
+        return `<div class="time-slot ${isTaken ? 'taken' : ''} ${isSelected ? 'selected' : ''}"
+      onclick="selectTime('${s.time}', ${!isTaken})">
+      ${s.time}
+      <div class="slot-cap">${cap}</div>
+    </div>`;
+      }).join('');
+    }
+
+    function selectTime(t, valid) {
+      if (!valid) return;
+      state.time = t;
+      document.getElementById('btn3').disabled = false;
+      renderTimeSlots();
+    }
+
+    // ─── BRANDS ──────────────────────────────────────────────
+    function renderBrands() {
+      document.getElementById('brand-grid').innerHTML = BRANDS.map(b => {
+        const sel = state.brands.includes(b.id);
+        return `<div class="brand-logo-card ${sel ? 'selected' : ''}" onclick="toggleBrand('${b.id}')">`
+          + `<div class="brand-check">&#10003;</div>`
+          + `<img src="${BRAND_LOGOS[b.id]}" alt="${b.name}" class="brand-logo-img">`
+          + `<div class="brand-logo-name">${b.name}</div>`
+          + `</div>`;
+      }).join('');
+    }
+
+    function toggleBrand(id) {
+      const idx = state.brands.indexOf(id);
+      if (idx === -1) state.brands.push(id);
+      else state.brands.splice(idx, 1);
+      document.getElementById('btn4').disabled = state.brands.length === 0;
+      renderBrands();
+    }
+
+    // ─── MINI SUMMARY ────────────────────────────────────────
+    function renderMiniSummary() {
+      const rep = REPS.find(r => r.id === state.rep);
+      const [y, m, d] = state.date.split('-');
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+      const dateFormatted = `${parseInt(d)} ${months[parseInt(m) - 1]} ${y}, ${state.time}`;
+      document.getElementById('mini-summary').innerHTML = `
+    <div class="summary-row">
+      <span class="summary-key">Temsilci</span>
+      <span class="summary-val">${rep.icon} ${rep.name} <span style="color:var(--text-muted);font-weight:300;font-size:12px;">(${rep.title})</span></span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">Tarih & Saat</span>
+      <span class="summary-val blue">📅 ${dateFormatted}</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-key">Markalar</span>
+      <span class="summary-val">${state.brands.map(id => { const b = BRANDS.find(x => x.id === id); return b ? b.name : id; }).join(' · ')}</span>
+    </div>
+  `;
+    }
+
+    // ─── FORM ────────────────────────────────────────────────
+    function checkForm() {
+      const ok = ['f-name', 'f-surname', 'f-company', 'f-email', 'f-phone'].every(id => {
+        const v = document.getElementById(id).value.trim();
+        return v.length > 0;
+      });
+      document.getElementById('btn5').disabled = !ok;
+    }
+
+    // ─── SUBMIT ──────────────────────────────────────────────
+    function showSuccess(confCode) {
+      document.getElementById('conf-code').textContent = confCode;
+      const repSelected = REPS.find(r => r.id === state.rep);
+      const [y, m, d] = state.date.split('-');
+      const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+      const name = document.getElementById('f-name').value + ' ' + document.getElementById('f-surname').value;
+      document.getElementById('success-detail').innerHTML = `
+    <b>${name}</b><br>
+    ${parseInt(d)} ${months[parseInt(m) - 1]} ${y}, saat ${state.time}<br>
+    ${repSelected.name} ile görüşme<br>
+    <span style="color:var(--blue)">${state.brands.map(id => { const b = BRANDS.find(x => x.id === id); return b ? b.name : id; }).join(', ')}</span>
+  `;
+
+      // Mark slot as taken locally (it will also be pushed to the sheet)
+      const k = takenKey(repSelected.name, state.date);
+      if (!TAKEN_SLOTS[k]) TAKEN_SLOTS[k] = [];
+      TAKEN_SLOTS[k].push(state.time);
+
+      const overlay = document.getElementById('success-overlay');
+      overlay.style.display = 'flex';
+      overlay.style.animation = 'fadeIn 0.3s ease';
+    }
+
+    async function submitForm() {
+      const btn = document.getElementById('btn5');
+      const originalText = btn.innerText;
+
+      // 1. UI Loading State
+      btn.disabled = true;
+      btn.innerText = 'Gönderiliyor...';
+
+      // 2. Prepare Data from your form and state object
+      const currentRep = REPS.find(r => r.id === state.rep);
+      const templateParams = {
+        user_name: document.getElementById('f-name').value + " " + document.getElementById('f-surname').value,
+        user_email: document.getElementById('f-email').value,
+        email: document.getElementById('f-email').value,      // Added for fallback
+        to_email: document.getElementById('f-email').value,   // Added for fallback
+        to_name: document.getElementById('f-name').value + " " + document.getElementById('f-surname').value, // Added for fallback
+        user_phone: document.getElementById('f-phone').value,
+        company: document.getElementById('f-company').value,
+        title: document.getElementById('f-title').value,
+        rep_name: currentRep.name,
+        rep_email: currentRep.email,
+        date: state.date,
+        time: state.time,
+        brands: state.brands.map(b => b.charAt(0).toUpperCase() + b.slice(1)).join(', '),
+        notes: document.getElementById('f-note').value,
+        conf_code: Math.random().toString(36).substr(2, 9).toUpperCase()
+      };
+
+      try {
+        // 3a. Save to Google Sheets
+        try {
+          await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify({
+              name: templateParams.user_name,
+              email: templateParams.user_email,
+              phone: templateParams.user_phone,
+              company: templateParams.company,
+              title: templateParams.title,
+              rep_name: templateParams.rep_name,
+              rep_email: templateParams.rep_email,
+              date: templateParams.date,
+              time: templateParams.time,
+              brands: templateParams.brands,
+              notes: templateParams.notes,
+              conf_code: templateParams.conf_code
+            })
+          });
+        } catch (es) {
+          console.error("Google Sheets Error:", es);
+          // If sheet fails we might still want to try sending emails, 
+          // or you could throw here depending on requirements.
+        }
+
+        // 3b. Send Email to Representative
+        try {
+          await emailjs.send('service_t983y0v', 'template_5jssjqo', templateParams);
+        } catch (e1) {
+          console.error("Temsilci mail hatası:", e1);
+        }
+
+        // 4. Send Confirmation to User
+        try {
+          await emailjs.send('service_t983y0v', 'template_9arm0b6', templateParams);
+        } catch (e2) {
+          console.error("Müşteri mail hatası:", e2);
+        }
+
+        // 5. Show Success Screen
+        showSuccess(templateParams.conf_code);
+      } catch (error) {
+        console.error("Email Error:", error);
+        alert("Randevu iletilirken bir hata oluştu: " + error.message);
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    }
+
+    // ─── NAVIGATION ─────────────────────────────────────────
+    function goToStep(n) {
+      const cur = state.step;
+      if (n >= cur) return; // only go back via goToStep
+      state.step = n;
+      updateStepUI();
+      renderCalendar();
+    }
+
+    function nextStep(n) {
+      state.step = n;
+      if (n === 3) renderTimeSlots();
+      if (n === 5) renderMiniSummary();
+      updateStepUI();
+    }
+
+    function prevStep(n) {
+      state.step = n;
+      updateStepUI();
+      if (n === 2) renderCalendar();
+    }
+
+    function updateStepUI() {
+      const n = state.step;
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(`panel-${n}`).classList.add('active');
+      document.querySelectorAll('.step-item').forEach(s => {
+        const sn = parseInt(s.dataset.step);
+        s.classList.remove('active', 'done');
+        if (sn === n) s.classList.add('active');
+        else if (sn < n) s.classList.add('done');
+      });
+    }
+
+    function resetAll() {
+      state = { step: 1, rep: null, date: null, time: null, brands: [], calYear: 2026, calMonth: 3 };
+      document.getElementById('success-overlay').style.display = 'none';
+      ['f-name', 'f-surname', 'f-company', 'f-title', 'f-email', 'f-phone', 'f-note'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      ['btn1', 'btn2', 'btn3', 'btn4', 'btn5'].forEach(id => {
+        document.getElementById(id).disabled = true;
+      });
+      renderReps();
+      renderCalendar();
+      renderBrands();
+      updateStepUI();
+    }
+
+    // ─── SCREENS ─────────────────────────────────────────────
+    function showScreen(screenId) {
+      document.getElementById('landing-screen').style.display = 'none';
+      document.getElementById('appointment-screen').style.display = 'none';
+      document.getElementById('seminar-screen').style.display = 'none';
+
+      document.getElementById(screenId).style.display = screenId === 'landing-screen' ? 'flex' : 'block';
+
+      // Custom logic
+      if (screenId === 'appointment-screen') {
+        // maybe reset or just rely on existing state
+      } else if (screenId === 'seminar-screen') {
+        renderSeminarTabs();
+        renderSeminars(0); // Show first day by default
+      }
+    }
+
+    // ─── SEMINARS DATA ───────────────────────────────────────
+    const SEMINAR_DAYS = [
+      { id: 0, date: '8 Nisan 2026 Çarşamba' },
+      { id: 1, date: '9 Nisan 2026 Perşembe' },
+      { id: 2, date: '10 Nisan 2026 Cuma' },
+      { id: 3, date: '11 Nisan 2026 Cumartesi' },
+    ];
+
+    let activeSeminarDay = 0;
+
+    const SEMINARS = [
+      // Day 0
+      { day: 0, time: '10:30', title: 'Geleceğin Taşıyıcı Sistemleri', speaker: 'Ahmet Yılmaz', speakerTitle: 'Ar-Ge Müdürü', photo: PHOTOS.m1, logo: BRAND_LOGOS.fenner_dunlop },
+      { day: 0, time: '13:00', title: 'Verimlilik ve Endüstri 4.0', speaker: 'Ayşe Kaya', speakerTitle: 'Operasyon Direktörü', photo: PHOTOS.f1, logo: BRAND_LOGOS.rulmeca },
+      { day: 0, time: '15:30', title: 'Ağır Sanayide İnovasyon', speaker: 'Mehmet Demir', speakerTitle: 'Ürün Yöneticisi', photo: PHOTOS.m2, logo: BRAND_LOGOS.domite },
+      // Day 1
+      { day: 1, time: '11:00', title: 'Sürdürülebilir Üretim Tesisleri', speaker: 'Zeynep Çelik', speakerTitle: 'Sürdürülebilirlik Uzmanı', photo: PHOTOS.f2, logo: BRAND_LOGOS.roxon },
+      { day: 1, time: '14:30', title: 'Yapay Zeka Destekli Taşıma', speaker: 'Can Tekin', speakerTitle: 'Yazılım Mühendisi', photo: PHOTOS.m3, logo: BRAND_LOGOS.inbi },
+      // Day 2
+      { day: 2, time: '10:00', title: 'Yeni Nesil Rulman Teknolojileri', speaker: 'Elif Şahin', speakerTitle: 'Kıdemli Mühendis', photo: PHOTOS.f3, logo: BRAND_LOGOS.rulmeca },
+      { day: 2, time: '13:45', title: 'Madencilikte Bant Sistemleri', speaker: 'Ahmet Yılmaz', speakerTitle: 'Ar-Ge Müdürü', photo: PHOTOS.m1, logo: BRAND_LOGOS.fenner_dunlop },
+      { day: 2, time: '16:00', title: 'Ekskavatör Yedek Parçaları', speaker: 'Mehmet Demir', speakerTitle: 'Ürün Yöneticisi', photo: PHOTOS.m2, logo: BRAND_LOGOS.domite },
+      // Day 3
+      { day: 3, time: '10:30', title: 'Otomasyon ve Veri Analizi', speaker: 'Ayşe Kaya', speakerTitle: 'Operasyon Direktörü', photo: PHOTOS.f1, logo: BRAND_LOGOS.inbi },
+      { day: 3, time: '14:00', title: 'Kapanış Oturumu: Sektör Değerlendirmesi', speaker: 'Can Tekin', speakerTitle: 'Genel Müdür', photo: PHOTOS.m3, logo: BRAND_LOGOS.roxon },
+    ];
+
+    function renderSeminarTabs() {
+      const tabsHtml = SEMINAR_DAYS.map(d => {
+        const isActive = activeSeminarDay === d.id;
+        return `<div class="seminar-tab ${isActive ? 'active' : ''}" onclick="selectSeminarDay(${d.id})">${d.date}</div>`;
+      }).join('');
+      document.getElementById('seminar-tabs').innerHTML = tabsHtml;
+    }
+
+    function selectSeminarDay(dayId) {
+      activeSeminarDay = dayId;
+      renderSeminarTabs();
+      renderSeminars(dayId);
+    }
+
+    function renderSeminars(dayId) {
+      const todaySeminars = SEMINARS.filter(s => s.day === dayId).sort((a, b) => a.time.localeCompare(b.time));
+
+      if (todaySeminars.length === 0) {
+        document.getElementById('seminar-list').innerHTML = `<div class="card" style="text-align:center; padding: 40px; color: var(--text-muted);">Bu gün için planlanmış seminer bulunmamaktadır.</div>`;
+        return;
+      }
+
+      const html = todaySeminars.map(s => {
+        return `
+      <div class="seminar-card">
+        <div class="seminar-time">${s.time}</div>
+        <img src="${s.photo}" alt="${s.speaker}" class="seminar-speaker-photo">
+        <div class="seminar-info">
+          <div class="seminar-title">${s.title}</div>
+          <div class="seminar-speaker-name">${s.speaker}</div>
+          <div class="seminar-speaker-title">${s.speakerTitle}</div>
+        </div>
+        <img src="${s.logo}" alt="Company" class="seminar-company-logo">
+      </div>
+    `;
+      }).join('');
+
+      document.getElementById('seminar-list').innerHTML = html;
+    }
+
+    // ─── START ───────────────────────────────────────────────
+    init();
+  </script>
+</body>
+
+</html>
