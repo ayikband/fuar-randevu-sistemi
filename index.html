@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fuar Randevu Sistemi</title>
+  <title>Ayık Band Fuar Randevu Sistemi</title>
+  <link rel="icon" type="image/x-icon"
+    href="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg">
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -609,6 +611,98 @@
       .form-row {
         grid-template-columns: 1fr;
       }
+    }
+
+    /* Clarification Checkbox & Text */
+    .clarification-container {
+      margin-top: 20px;
+      margin-bottom: 24px;
+      background: var(--dark3);
+      border: 1.5px solid rgba(26, 115, 197, 0.15);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .clarification-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 43, 78, 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .clarification-modal {
+      background: var(--dark2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .clarification-modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .clarification-modal-title {
+      font-weight: 600;
+      font-size: 16px;
+      font-family: var(--font-family);
+    }
+
+    .clarification-modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .clarification-modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .clarification-modal-body strong {
+      color: var(--text);
+    }
+
+    .clarification-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+      background: rgba(26, 115, 197, 0.03);
+      transition: background 0.2s;
+    }
+
+    .clarification-checkbox:hover {
+      background: rgba(26, 115, 197, 0.06);
+    }
+
+    .clarification-checkbox input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--blue);
+      cursor: pointer;
     }
 
     /* Summary */
@@ -1216,7 +1310,8 @@
     </div>
     <div class="landing-header">
       <h1>Fuar Ziyaret Randevunuzu Oluşturun</h1>
-      <p>Stant alanımızda sizi özel olarak ağırlamak veya seminerlerimize katılmak için seçiminizi yapın.</p>
+      <p>Stant alanımızda sizi özel olarak ağırlamamız adına randevu oluşturabilir veya seminer programımızı
+        görüntüleyebilirsiniz.</p>
     </div>
     <div class="landing-options">
       <div class="landing-card" onclick="showScreen('appointment-screen')">
@@ -1230,7 +1325,7 @@
           </svg>
         </div>
         <h2>Stant Randevu Sistemi</h2>
-        <p>Uzman ekibimizle fuar alanında birebir görüşme randevusu alın.</p>
+        <p>Uzman ekibimizle fuar alanımızda birebir görüşmek için randevu alabilirsiniz.</p>
       </div>
       <div class="landing-card" onclick="showScreen('seminar-screen')">
         <div class="landing-icon">
@@ -1249,7 +1344,7 @@
           </svg>
         </div>
         <h2>Seminer Takvimi</h2>
-        <p>4 günlük seminer ve sunum programımızı inceleyin.</p>
+        <p>4 günlük seminer ve sunum programımızı inceleyebilirsiniz.</p>
       </div>
     </div>
   </div>
@@ -1257,9 +1352,13 @@
   <!-- ─── SEMINAR SCREEN ───────────────────────────────────── -->
   <div id="seminar-screen" style="display:none;">
     <div class="container" style="max-width: 800px; position:relative;">
-      <div class="header" style="text-align:center; position:relative;">
-        <button class="btn btn-outline" style="position:absolute; left:0; top:0; padding: 8px 16px; font-size:14px;"
+      <div class="header" style="text-align:center; position:relative; padding-top: 10px;">
+        <button class="btn btn-outline" style="position:absolute; left:0; top:25px; padding: 8px 16px; font-size:14px;"
           onclick="showScreen('landing-screen')">← Geri</button>
+        <div class="landing-logo" style="margin-bottom: 24px;">
+          <img src="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg"
+            alt="Ayık Band" style="height: 70px; width: auto;">
+        </div>
         <div class="header-badge" style="margin: 0 auto 16px;">
           <span>📅</span>
           <span>Seminer Takvimi</span>
@@ -1279,15 +1378,19 @@
   <!-- ─── APPOINTMENT SCREEN ───────────────────────────────── -->
   <div id="appointment-screen" style="display:none;">
     <div class="container">
-      <div class="header" style="position:relative;">
-        <button class="btn btn-outline" style="position:absolute; left:0; top:0; padding: 8px 16px; font-size:14px;"
+      <div class="header" style="position:relative; padding-top: 10px;">
+        <button class="btn btn-outline" style="position:absolute; left:0; top:25px; padding: 8px 16px; font-size:14px;"
           onclick="showScreen('landing-screen')">← Geri</button>
+        <div class="landing-logo" style="margin-bottom: 24px;">
+          <img src="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg"
+            alt="Ayık Band" style="height: 70px; width: auto;">
+        </div>
         <div class="header-badge" style="margin: 0 auto 16px;">
           <span>📅</span>
           <span>Stant Randevu Sistemi</span>
         </div>
         <h1>Fuar Ziyaret Randevunuzu<br>Oluşturun</h1>
-        <p>Stant alanımızda sizi özel olarak ağırlamak için randevunuzu ayarlayın.</p>
+        <p>Stant alanımızda sizi özel olarak ağırlayabilmemiz adına randevu oluşturabilirsiniz.</p>
       </div>
 
       <!-- Steps -->
@@ -1320,8 +1423,7 @@
 
           <!-- PANEL 1: Temsilci -->
           <div class="panel active" id="panel-1">
-            <div class="panel-title">Bölge Satış Müdürünüzü Seçin</div>
-            <div class="panel-sub">Görüşmek istediğiniz temsilciyi seçin</div>
+            <div class="panel-title">Görüşmek istediğiniz temsilcimizi seçiniz.</div>
             <div class="grid-2" id="rep-grid"></div>
             <div class="btn-row">
               <button class="btn btn-primary" id="btn1" disabled onclick="nextStep(2)">Devam Et →</button>
@@ -1331,7 +1433,7 @@
           <!-- PANEL 2: Tarih -->
           <div class="panel" id="panel-2">
             <div class="panel-title">Tarih Seçin</div>
-            <div class="panel-sub">Fuar süresince müsait tarihlerden birini seçin</div>
+            <div class="panel-sub">Fuar süresince müsait tarihlerden birini seçiniz.</div>
             <div class="cal-header">
               <button class="cal-nav" onclick="changeMonth(-1)">‹</button>
               <div class="cal-title" id="cal-month-title"></div>
@@ -1371,7 +1473,7 @@
           <!-- PANEL 5: Kişisel Bilgiler -->
           <div class="panel" id="panel-5">
             <div class="panel-title">İletişim Bilgileriniz</div>
-            <div class="panel-sub">Randevunuzu tamamlamak için bilgilerinizi girin</div>
+            <div class="panel-sub">Randevunuzu tamamlamak için bilgilerinizi giriniz.</div>
 
             <div class="summary-box" id="mini-summary"></div>
 
@@ -1414,6 +1516,15 @@
                 placeholder="Görüşmek istediğiniz konular, sorularınız..."></textarea>
             </div>
 
+            <div class="form-group clarification-container">
+              <label class="clarification-checkbox">
+                <input type="checkbox" id="f-clarification" onchange="checkForm()">
+                <span><a href="#" onclick="openClarificationModal(event)"
+                    style="text-decoration: underline; color: var(--blue);">Aydınlatma Metni</a>'ni okudum ve kabul
+                  ediyorum.</span>
+              </label>
+            </div>
+
             <div class="btn-row">
               <button class="btn btn-ghost" onclick="prevStep(4)">← Geri</button>
               <button class="btn btn-primary" id="btn5" disabled onclick="submitForm()">Randevuyu Onayla ✓</button>
@@ -1426,6 +1537,96 @@
       <div class="footer">Güvenli Randevu Sistemi &nbsp;·&nbsp; Verileriniz gizli tutulur</div>
     </div>
 
+    <!-- CLARIFICATION MODAL (hidden) -->
+    <div id="clarification-modal-overlay" class="clarification-modal-overlay"
+      onclick="closeClarificationModalOutside(event)">
+      <div class="clarification-modal">
+        <div class="clarification-modal-header">
+          <div class="clarification-modal-title">Aydınlatma Metni</div>
+          <button class="clarification-modal-close" onclick="closeClarificationModal()">×</button>
+        </div>
+        <div class="clarification-modal-body">
+          <strong>STANT RANDEVU SİSTEMİ KATILIMCISI/ ZİYARETÇİSİNE AİT KİŞİSEL VERİLERİN İŞLENMESİ VE KORUNMASI HAKKINDA
+            AYDINLATMA METNİ</strong><br><br>
+          İmes San. Sit C Blok 302. Sokak No:16 34775 Y.Dudullu/ İstanbul adresinde faaliyet gösteren AYIK BAND SAN. VE
+          TİC. LTD. ŞTİ. (“AYIK BAND” veya “ŞİRKET”) olarak kişisel verilerinizin güvenliği hususuna azami hassasiyet
+          göstermekteyiz. Bu bilinçle, gerçek kişilere ait kişisel verilerin 6698 sayılı Kişisel Verilerin Korunması
+          Kanunu (“Kanun”)’na, Kanun’a bağlı yürürlüğe koyulan ve koyulacak ikincil düzenlemelere (yönetmelik, tebliğ,
+          genelge) ve bağlayıcı nitelikteki Kişisel Verileri Koruma Kurulu tarafından alınmış ve alınacak kararlara
+          uygun olarak işlenerek, muhafaza edilmesine büyük önem atfetmekteyiz. Bu sorumluluğumuzun tam idraki ile
+          Kanun’da tanımlı şekli ile “Veri Sorumlusu” sıfatıyla, kişisel verilerinizi aşağıda izah edildiği surette ve
+          mevzuat tarafından emredilen sınırlar çerçevesinde işlemekteyiz.<br><br>
+          <strong>1. Veri Sorumlusuna İlişkin Bilgiler</strong><br>
+          Kanun uyarınca İstanbul Ticaret Sicili Müdürlüğü’nde 436911-0 sicil numarasıyla kayıtlı, “İmes San. Sit C Blok
+          302. Sokak No:16 34775 Y.Dudullu/ İstanbul” adresinde faaliyet gösteren AYIK BAND SAN. VE TİC. LTD. ŞTİ. Veri
+          Sorumlusudur.<br><br>
+          <strong>2. İşlenen Kişisel Verileriniz ve İşlenme Amaçları</strong><br>
+          Kimlik Verilerinizden; Ad-Soyad bilgileriniz, Özlük Verilerinizden; Çalıştığınız firma bilgisi, Görev ve Unvan
+          Bilgileriniz, İletişim Verilerinizden; E-posta Adresiniz ve Telefon Numaranız, Diğer Verilerinizden;
+          Tarafınızca paylaşılan notlar/ sorular, Görsel Verilerinizden; Fotoğraf, Kamera Görüntüsü aşağıda belirtilen
+          amaçlar doğrultusunda Şirket tarafından işlenecektir. Ziyaretçi/katılımcılara ait kişisel veriler Şirket
+          tarafından; stant randevularının organize edilmesi amacıyla sınırlı olarak işlenmektedir.<br><br>
+          <strong>3. Kişisel Verilerin Aktarılması</strong><br>
+          Toplanan kişisel verileriniz; Kanun’un 8. ve 9. maddelerinde belirtilen şartlar çerçevesinde; Şirketimizin
+          ilgili birimleri ve çalışanlarına, gerekli görülen hallerde Şirket yöneticilerine ve mevzuatta öngörülen
+          yetkili kamu kurum ve kuruluşları ile gerçek/tüzel kişilere aktarılabilecektir.<br><br>
+          Şirket web sitemizin sunucularının yurt dışında bulunması ve ilgili formların bu altyapı üzerinden yönetilmesi
+          nedeniyle, formda yer alan kişisel verileriniz teknik gereklilikler doğrultusunda yurt dışına aktarılmaktadır.
+          Ayrıca, fuar süresince tanıtım ve pazarlama faaliyetleri kapsamında Şirketimizce fotoğraf ve kamera kaydı
+          alınabilmektedir. Bu kapsamda işlenen görsel verileriniz, Şirketimizin kurumsal tanıtımı amacıyla sunucuları
+          yurt dışında bulunan sosyal medya (LinkedIn, Instagram, X, Youtube vb.) platformlarında ve dijital mecralarda
+          paylaşılabilecektir.<br><br>
+          <strong>4. Kişisel Verilerin Toplanma Yöntemi ve Hukuki Sebepleri</strong><br>
+          Kişisel verileriniz, internet sitemizde yer alan “Stant Randevu Sistemi” formu üzerinden otomatik yöntemlerle
+          toplanmaktadır. Kişisel verileriniz, yukarıda bahsedilen amaçlar doğrultusunda 6698 sayılı Kişisel Verileri
+          Koruma Kanunu’nun (“Kanun”) 5. maddesinin 2. fıkrasının (c) bendi uyarınca; sözleşmenin kurulması ve ifası ile
+          Kanun’un 5. Maddesinin 2. fıkrasının (f) bendi uyarınca; şirketin fuar organizasyonunu yönetmesi, katılımcı
+          profilini bilmesi ve güvenliği sağlaması meşru menfaati hukuki sebeplerine dayanarak işlenecektir.<br><br>
+          Fuar süresince Şirketimizin tanıtım, pazarlama ve reklam faaliyetlerinin yürütülmesi amacıyla fotoğraf ve
+          video kayıtları alınabilmektedir. Bu kapsamda;<br>
+          • Genel Çekimler: Etkinliğin genel işleyişini yansıtan ve belirli bir kişiye odaklanmayan toplu görüntüler,
+          Şirketimizin meşru menfaatleri (KVKK m.5/2-f) kapsamında işlenmektedir.<br>
+          • Sosyal Medya ve Yurt Dışı Aktarımı: Söz konusu görsel verilerin, sunucuları yurt dışında bulunan sosyal
+          medya hesaplarımızda paylaşılması ve bu yolla yurt dışına aktarılması ise; Kanun’un 9. maddesi ve 5.
+          maddesinin 1. fıkrası uyarınca açık rızanıza dayalı olarak gerçekleştirilmektedir. Etkinlik alanında bulunarak
+          çekim yapılmasına itiraz etmeyen katılımcılarımızın görsel verilerinin paylaşımına rıza gösterdiği kabul
+          edilmektedir. Görüntülenmek istemeyen veya paylaşımlarda yer almak istemeyen katılımcılarımızın; çekim yapan
+          ekibimize bu durumu sözlü olarak bildirmesi veya [bilgi@ayik.com.tr] üzerinden bizimle iletişime geçmesi rica
+          olunur. Bu durumda talebiniz derhal işleme alınarak ilgili görseller paylaşılmayacak, mevcut paylaşımlar ise
+          yayından kaldırılacak veya karartılacaktır.<br><br>
+          <strong>5. Veri Sahiplerinin Kanun Kapsamındaki Hakları</strong><br>
+          Dilediğiniz zaman Şirket’e başvurarak;<br>
+          • Kişisel verilerinizin işlenip işlenmediğini öğrenme,<br>
+          • Kişisel verileriniz işlenmişse buna ilişkin bilgi talep etme,<br>
+          • Kişisel verilerinizin işlenme amacını ve bunların amacına uygun kullanılıp kullanılmadığını öğrenme,<br>
+          • Yurt içinde veya yurt dışında kişisel verilerinizin aktarıldığı üçüncü kişileri bilme,<br>
+          • Kişisel verilerinizin eksik veya yanlış işlenmiş olması hâlinde bunların düzeltilmesini isteme,<br>
+          • Kanun’un 7. maddesinde öngörülen şartlar çerçevesinde kişisel verilerin silinmesini veya yok edilmesini
+          isteme,<br>
+          • Kanun’un 11. maddesinin (d) ve (e) bentleri uyarınca yapılan işlemlerin, kişisel verilerinizin aktarıldığı
+          üçüncü kişilere bildirilmesini isteme,<br>
+          • İşlenen verilerinizin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle kendiniz aleyhine
+          bir sonucun ortaya çıkmasına itiraz etme,<br>
+          • Kişisel verilerinizin kanuna aykırı olarak işlenmesi sebebiyle zarara uğramanız hâlinde zararın
+          giderilmesini talep etme,<br><br>
+          Haklarınızı kullanmayı talep edebilirsiniz. Haklarınıza ve Kanunun uygulanmasına ilişkin taleplerinizi,
+          işyerinden veya http://www.konveyorbant.com/ adresinden temin edebileceğiniz başvuru formunu doldurarak ıslak
+          imzalı şekilde “İmes San. Sit C Blok 302. Sokak No:16 34775 Y.Dudullu/ İstanbul” adresine noter kanalıyla,
+          iadeli taahhütlü posta yoluyla veya şahsi başvurunuzla ya da elektronik ortamda doldurduğunuz başvuru formunu
+          mobil imzanızla, güvenli elektronik imzanızla imzaladıktan sonra KEP adresinizi veya Şirket’in veri kayıt
+          sisteminde halihazırda kayıtlı olan e-posta adresinizi kullanarak [bilgi@ayik.com.tr] adresine
+          iletebilirsiniz. Şirket, bu kapsamdaki taleplere yazılı olarak cevap verilecekse, on sayfaya kadar ücret
+          almadan; on sayfanın üzerindeki her sayfa için 1 Türk Lirası işlem ücreti alarak yanıtlandıracaktır. Başvuruya
+          cevabın CD, flash bellek gibi bir kayıt ortamında verilmesi halinde Şirket tarafından talep edilebilecek ücret
+          kayıt ortamının maliyetini geçemeyecektir.<br><br>
+          Fuar sırasında fotoğraf ve video çekimi yapılacağını dikkatinize sunarız. Çekilen fotoğraf ve video
+          kayıtlarının kurumumuzca paylaşılmasına ilişkin detaylı bilgilere, yukarıdaki Aydınlatma Metni’nden
+          ulaşabilirsiniz.<br><br>
+          AYIK BAND SAN. VE TİC. LTD. ŞTİ.
+        </div>
+      </div>
+    </div>
+
     <!-- SUCCESS MODAL (hidden) -->
     <div id="success-overlay"
       style="display:none; position:fixed; inset:0; background:rgba(13,43,78,0.7); z-index:100; display:none; align-items:center; justify-content:center; padding:20px;">
@@ -1434,7 +1635,8 @@
         <div class="success-screen">
           <div class="success-icon">✓</div>
           <h2>Randevunuz Oluşturuldu!</h2>
-          <p>Onay detayları e-posta adresinize gönderilmiştir. Sizi stantımızda ağırlamaktan memnuniyet duyacağız.</p>
+          <p>Onay detayları e-posta adresinize gönderilmiştir. Sizleri standımızda ağırlamaktan memnuniyet duyacağız.
+          </p>
           <div class="conf-code" id="conf-code">—</div>
           <div id="success-detail" style="font-size:14px; color:var(--text-muted); line-height:1.8;"></div>
           <button class="btn btn-primary" style="margin-top:28px;" onclick="resetAll()">Yeni Randevu Oluştur</button>
@@ -1460,7 +1662,7 @@
       { id: 'r1', name: 'Nasuh Durmaz', region: 'Bölge Satış Müdürü', title: 'Marmara & Ege', phone: '+90 531 463 72 02', email: 'nasuh@ayik.com.tr', icon: '👨‍💼' },
       { id: 'r2', name: 'Kamil Şerefoğlu', region: 'Bölge Satış Müdürü', title: 'Akdeniz', phone: '+90 539 928 56 66', email: 'kamil@ayik.com.tr', icon: '👨‍💼' },
       { id: 'r3', name: 'Korcan Türkmen', region: 'Bölge Satış Müdürü', title: 'İç Anadolu & Karadeniz', phone: '+90 549 104 10 03', email: 'korcan@ayik.com.tr', icon: '👨‍💼' },
-      { id: 'r4', name: 'Atakan Ilgaz', region: 'İş Geliştirme Müdürü', title: '', phone: '+90 532 255 74 46', email: 'ertunc@ayik.com.tr', icon: '👨‍💼' },
+      { id: 'r4', name: 'Atakan Ilgaz', region: 'İş Geliştirme Müdürü', title: '', phone: '+90 549 104 10 02', email: 'atakan@ayik.com.tr', icon: '👨‍💼' },
       { id: 'r5', name: 'Huriye Yaman', region: 'Teklif & Satış Destek Müdürü', title: '', phone: '+90 530 351 45 83', email: 'huriye@ayik.com.tr', icon: '👩‍💼' },
       { id: 'r6', name: 'Cengizhan İnli', region: 'Teknik Lider', title: '', phone: '+90 539 701 25 33', email: 'cengizhan@ayik.com.tr', icon: '👨‍💼' },
       { id: 'r7', name: 'Eren Saka', region: 'Uygulama Mühendisi', title: '', phone: '+90 533 314 15 52', email: 'eren@ayik.com.tr', icon: '👨‍💼' },
@@ -1468,7 +1670,7 @@
     ];
 
     const BRAND_LOGOS = {
-      'fenner_dunlop': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/fenner-dunlop.png', // Logo URL'sini buraya yapıştırın
+      'fenner_dunlop': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/fenner-dunlop-1.png', // Logo URL'sini buraya yapıştırın
       'rulmeca': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/rulmeca.png', // Logo URL'sini buraya yapıştırın
       'domite': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/domite.png', // Logo URL'sini buraya yapıştırın
       'roxon': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/roxon.png', // Logo URL'sini buraya yapıştırın
@@ -1730,7 +1932,7 @@
       document.getElementById('mini-summary').innerHTML = `
     <div class="summary-row">
       <span class="summary-key">Temsilci</span>
-      <span class="summary-val">${rep.icon} ${rep.name} <span style="color:var(--text-muted);font-weight:300;font-size:12px;">(${rep.title})</span></span>
+      <span class="summary-val">${rep.icon} ${rep.name} <span style="color:var(--text-muted);font-weight:300;font-size:12px;">(${rep.region})</span></span>
     </div>
     <div class="summary-row">
       <span class="summary-key">Tarih & Saat</span>
@@ -1743,13 +1945,29 @@
   `;
     }
 
+    function openClarificationModal(e) {
+      e.preventDefault();
+      document.getElementById('clarification-modal-overlay').style.display = 'flex';
+    }
+
+    function closeClarificationModal() {
+      document.getElementById('clarification-modal-overlay').style.display = 'none';
+    }
+
+    function closeClarificationModalOutside(e) {
+      if (e.target.id === 'clarification-modal-overlay') {
+        closeClarificationModal();
+      }
+    }
+
     // ─── FORM ────────────────────────────────────────────────
     function checkForm() {
       const ok = ['f-name', 'f-surname', 'f-company', 'f-email', 'f-phone'].every(id => {
         const v = document.getElementById(id).value.trim();
         return v.length > 0;
       });
-      document.getElementById('btn5').disabled = !ok;
+      const checked = document.getElementById('f-clarification').checked;
+      document.getElementById('btn5').disabled = !(ok && checked);
     }
 
     // ─── SUBMIT ──────────────────────────────────────────────
@@ -1899,6 +2117,8 @@
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
+      const clarBox = document.getElementById('f-clarification');
+      if (clarBox) clarBox.checked = false;
       ['btn1', 'btn2', 'btn3', 'btn4', 'btn5'].forEach(id => {
         document.getElementById(id).disabled = true;
       });
