@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ayık Band Fuar Randevu Sistemi</title>
+  <title>Ayık Band Stant Randevu Takvimi</title>
   <link rel="icon" type="image/x-icon"
-    href="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg">
+    href="https://www.konveyorbant.com/wp-content/uploads/2026/03/ayik-logo@10x-1-scaled.png">
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap"
     rel="stylesheet">
@@ -15,11 +15,11 @@
       --bg: #F5F7FA;
       --surface: #FFFFFF;
       --surface-hover: #EDF2F7;
-      --primary: #132F4F;
+      --primary: #021f38;
       --primary-hover: #165E8A;
       --accent: #72B2E2;
-      --text: #132F4F;
-      --text-muted: rgba(19, 47, 79, 0.65);
+      --text: #021f38;
+      --text-muted: rgba(2, 31, 56, 0.65);
       --border: #E2E8F0;
       --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 
@@ -130,10 +130,7 @@
       font-weight: 700;
       letter-spacing: -0.5px;
       line-height: 1.15;
-      background: linear-gradient(135deg, var(--primary-hover) 30%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #021f38;
     }
 
     .header p {
@@ -1051,7 +1048,7 @@
     }
 
     .landing-logo img {
-      height: 90px;
+      height: 120px;
       width: auto;
       max-width: 100%;
     }
@@ -1299,7 +1296,7 @@
       }
 
       .landing-logo img {
-        height: 65px;
+        height: 85px;
       }
 
       .landing-header h1 {
@@ -1329,7 +1326,7 @@
 
       /* Inner page logos */
       .header .landing-logo img {
-        height: 50px;
+        height: 70px;
       }
 
       .header h1 {
@@ -1455,7 +1452,8 @@
       /* Form fields */
       .form-input {
         padding: 14px 14px;
-        font-size: 16px; /* prevents iOS zoom on focus */
+        font-size: 16px;
+        /* prevents iOS zoom on focus */
         border-radius: 10px;
       }
 
@@ -1645,6 +1643,7 @@
         width: 100%;
         position: relative;
       }
+
       .container {
         max-width: 100%;
         width: 100vw;
@@ -1652,18 +1651,22 @@
         padding-left: 15px;
         padding-right: 15px;
       }
+
       #seminar-screen .container {
         padding-left: 10px;
         padding-right: 10px;
         width: 100%;
       }
+
       .seminar-tabs {
-        width: calc(100vw - 20px); /* Account for padding */
+        width: calc(100vw - 20px);
+        /* Account for padding */
         margin-left: -10px;
         padding-left: 10px;
         padding-right: 10px;
         scroll-snap-type: x mandatory;
       }
+
       .seminar-tab {
         scroll-snap-align: start;
       }
@@ -1683,12 +1686,15 @@
   <!-- ─── LANDING SCREEN ───────────────────────────────────── -->
   <div id="landing-screen">
     <div class="landing-logo">
-      <img src="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg" alt="Ayık Band">
+      <img src="https://www.konveyorbant.com/wp-content/uploads/2026/03/ayik-logo@10x-1-scaled.png" alt="Ayık Band">
     </div>
     <div class="landing-header">
-      <h1>Fuar Ziyaret Randevunuzu Oluşturun</h1>
-      <p>Stant alanımızda sizi özel olarak ağırlamamız adına randevu oluşturabilir veya seminer programımızı
-        görüntüleyebilirsiniz.</p>
+      <h1 style="color: #021f38;">Stant Randevu Takvimi</h1>
+      <p style="font-weight: 600; color: #021f38; margin-bottom: 4px;">8 - 11 Nisan 2026</p>
+      <p style="color: var(--text-muted); margin-bottom: 2px;">Maden Türkiye</p>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">Salon: 7 / Stant: 723B</p>
+      <p>Stant alanımızda sizi özel olarak ağırlayabilmemiz için randevu oluşturabilir ve seminer programımızı
+        inceleyebilirsiniz.</p>
     </div>
     <div class="landing-options">
       <div class="landing-card" onclick="showScreen('appointment-screen')">
@@ -1701,10 +1707,10 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
         </div>
-        <h2>Stant Randevu Sistemi</h2>
-        <p>Uzman ekibimizle fuar alanımızda birebir görüşmek için randevu alabilirsiniz.</p>
+        <h2>Stant Randevu Takvimi</h2>
+        <p>Uzman ekibimizle fuar alanında birebir görüşmek için randevunuzu oluşturabilirsiniz.</p>
       </div>
-      <div class="landing-card" style="opacity: 0.6; cursor: not-allowed;" onclick="javascript:void(0)">
+      <div class="landing-card" onclick="showScreen('seminar-screen')">
         <div class="landing-icon">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -1721,7 +1727,7 @@
           </svg>
         </div>
         <h2>Seminer Takvimi</h2>
-        <p>Yakında sizlerle!</p>
+        <p>Sektör profesyonellerinden ilham verici sunumları keşfedin.</p>
       </div>
     </div>
   </div>
@@ -1735,8 +1741,8 @@
             onclick="showScreen('landing-screen')">← Geri</button>
         </div>
         <div class="landing-logo" style="margin-bottom: 24px;">
-          <img src="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg"
-            alt="Ayık Band" style="height: 70px; width: auto;">
+          <img src="https://www.konveyorbant.com/wp-content/uploads/2026/03/ayik-logo@10x-1-scaled.png" alt="Ayık Band"
+            style="height: 90px; width: auto;">
         </div>
         <div class="header-badge" style="margin: 0 auto 16px;">
           <span>📅</span>
@@ -1763,15 +1769,15 @@
             onclick="showScreen('landing-screen')">← Geri</button>
         </div>
         <div class="landing-logo" style="margin-bottom: 24px;">
-          <img src="https://www.konveyorbant.com/wp-content/themes/ayik-band/assets/image/logo/logo2.svg"
-            alt="Ayık Band" style="height: 70px; width: auto;">
+          <img src="https://www.konveyorbant.com/wp-content/uploads/2026/03/ayik-logo@10x-1-scaled.png" alt="Ayık Band"
+            style="height: 90px; width: auto;">
         </div>
         <div class="header-badge" style="margin: 0 auto 16px;">
           <span>📅</span>
-          <span>Stant Randevu Sistemi</span>
+          <span>Stant Randevu Takvimi</span>
         </div>
-        <h1>Fuar Ziyaret Randevunuzu<br>Oluşturun</h1>
-        <p>Stant alanımızda sizi özel olarak ağırlayabilmemiz adına randevu oluşturabilirsiniz.</p>
+        <h1 style="color: #021f38;">Stant Randevu Takvimi</h1>
+        <p>Uzman ekibimizle fuar alanında birebir görüşmek için randevunuzu oluşturabilirsiniz.</p>
       </div>
 
       <!-- Steps -->
@@ -2026,7 +2032,7 @@
       'r1': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-2.png', // Fotoğraf URL'sini buraya yapıştırın
       'r2': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/2.png', // Fotoğraf URL'sini buraya yapıştırın
       'r3': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-3.png', // Fotoğraf URL'sini buraya yapıştırın
-      'r4': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-tasarim-1.png', // Fotoğraf URL'sini buraya yapıştırın
+      'r4': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Atakan-Ilgaz-LinkedIn-Gonderisi.png', // Fotoğraf URL'sini buraya yapıştırın
       'r5': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi-5.png', // Fotoğraf URL'sini buraya yapıştırın
       'r6': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/Adsiz-LinkedIn-Gonderisi.png', // Fotoğraf URL'sini buraya yapıştırın
       'r7': 'https://www.konveyorbant.com/wp-content/uploads/2026/03/8.png', // Fotoğraf URL'sini buraya yapıştırın
@@ -2123,9 +2129,9 @@
 
     function generateAllSlots() {
       const slots = [];
-      for (let h = 9; h <= 18; h++) {
+      for (let h = 9; h <= 17; h++) {
         slots.push({ time: `${h.toString().padStart(2, '0')}:00` });
-        if (h < 18) slots.push({ time: `${h.toString().padStart(2, '0')}:30` });
+        if (h < 17) slots.push({ time: `${h.toString().padStart(2, '0')}:30` });
       }
       return slots;
     }
@@ -2202,14 +2208,18 @@
 
       for (let d = 1; d <= daysInMonth; d++) {
         const dt = new Date(state.calYear, state.calMonth, d);
-        const inFair = dt >= FAIR_START && dt <= FAIR_END;
         const isPast = dt < today;
         const dateStr = `${state.calYear}-${String(state.calMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+        let inFair = dt >= FAIR_START && dt <= FAIR_END;
+        if (state.rep === 'r8' && dateStr !== '2026-04-09') {
+          inFair = false;
+        }
         const isSelected = state.date === dateStr;
         const isToday = dt.getTime() === today.getTime();
 
         const rep = REPS.find(r => r.id === state.rep);
-        let taken = (rep && state.date) ? (TAKEN_SLOTS[takenKey(rep.name, dateStr)] || []) : [];
+        let taken = rep ? (TAKEN_SLOTS[takenKey(rep.name, dateStr)] || []) : [];
         const allSlots = generateAllSlots();
         const isFull = inFair && !isPast && taken.length >= allSlots.length;
 
@@ -2400,9 +2410,9 @@
         rep_email: currentRep.email,
         date: state.date,
         time: state.time,
-        brands: state.brands.map(id => { 
-          const b = BRANDS.find(x => x.id === id); 
-          return b ? b.name : id; 
+        brands: state.brands.map(id => {
+          const b = BRANDS.find(x => x.id === id);
+          return b ? b.name : id;
         }).join(', '),
         notes: document.getElementById('f-note').value,
         conf_code: Math.random().toString(36).substr(2, 9).toUpperCase()
@@ -2464,6 +2474,21 @@
 
     // ─── NAVIGATION ─────────────────────────────────────────
     function goToStep(n) {
+      if (n > 1 && !state.rep) {
+        // Prevent going to steps > 1 without selecting a rep
+        return;
+      }
+      if (n > 2 && !state.date) {
+        // Prevent going to steps > 2 without selecting a date
+        return;
+      }
+      if (n > 3 && !state.time) {
+        // Prevent going to steps > 3 without selecting a time
+        return;
+      }
+      if (n > state.step) {
+        // Validation could go here
+      }
       const cur = state.step;
       if (n >= cur) return; // only go back via goToStep
       state.step = n;
@@ -2473,6 +2498,7 @@
 
     function nextStep(n) {
       state.step = n;
+      if (n === 2) renderCalendar();
       if (n === 3) renderTimeSlots();
       if (n === 5) renderMiniSummary();
       updateStepUI();
@@ -2543,20 +2569,10 @@
     let activeSeminarDay = 0;
 
     const SEMINARS = [
-      // Day 0
-      { day: 0, time: '10:30', title: 'Geleceğin Taşıyıcı Sistemleri', speaker: 'Ahmet Yılmaz', speakerTitle: 'Ar-Ge Müdürü', photo: PHOTOS.m1, logo: BRAND_LOGOS.fenner_dunlop },
-      { day: 0, time: '13:00', title: 'Verimlilik ve Endüstri 4.0', speaker: 'Ayşe Kaya', speakerTitle: 'Operasyon Direktörü', photo: PHOTOS.f1, logo: BRAND_LOGOS.rulmeca },
-      { day: 0, time: '15:30', title: 'Ağır Sanayide İnovasyon', speaker: 'Mehmet Demir', speakerTitle: 'Ürün Yöneticisi', photo: PHOTOS.m2, logo: BRAND_LOGOS.domite },
-      // Day 1
-      { day: 1, time: '11:00', title: 'Sürdürülebilir Üretim Tesisleri', speaker: 'Zeynep Çelik', speakerTitle: 'Sürdürülebilirlik Uzmanı', photo: PHOTOS.f2, logo: BRAND_LOGOS.roxon },
-      { day: 1, time: '14:30', title: 'Yapay Zeka Destekli Taşıma', speaker: 'Can Tekin', speakerTitle: 'Yazılım Mühendisi', photo: PHOTOS.m3, logo: BRAND_LOGOS.inbi },
-      // Day 2
-      { day: 2, time: '10:00', title: 'Yeni Nesil Rulman Teknolojileri', speaker: 'Elif Şahin', speakerTitle: 'Kıdemli Mühendis', photo: PHOTOS.f3, logo: BRAND_LOGOS.rulmeca },
-      { day: 2, time: '13:45', title: 'Madencilikte Bant Sistemleri', speaker: 'Ahmet Yılmaz', speakerTitle: 'Ar-Ge Müdürü', photo: PHOTOS.m1, logo: BRAND_LOGOS.fenner_dunlop },
-      { day: 2, time: '16:00', title: 'Ekskavatör Yedek Parçaları', speaker: 'Mehmet Demir', speakerTitle: 'Ürün Yöneticisi', photo: PHOTOS.m2, logo: BRAND_LOGOS.domite },
-      // Day 3
-      { day: 3, time: '10:30', title: 'Otomasyon ve Veri Analizi', speaker: 'Ayşe Kaya', speakerTitle: 'Operasyon Direktörü', photo: PHOTOS.f1, logo: BRAND_LOGOS.inbi },
-      { day: 3, time: '14:00', title: 'Kapanış Oturumu: Sektör Değerlendirmesi', speaker: 'Can Tekin', speakerTitle: 'Genel Müdür', photo: PHOTOS.m3, logo: BRAND_LOGOS.roxon },
+      // Day 0 - 8 Nisan 2026 Çarşamba
+      { day: 0, time: '11:00', title: 'Bantlı Konveyörler İçin Çelik ve Termoplastik Rulolar', speaker: 'Marzio Zirafa', speakerTitle: 'International Business Developer Manager', photo: 'https://www.konveyorbant.com/wp-content/uploads/2026/03/marziozirafa-1.jpeg', logo: BRAND_LOGOS.rulmeca },
+      // Day 1 - 9 Nisan 2026 Perşembe
+      { day: 1, time: '11:00', title: 'Motorlu Tamburlar', speaker: 'Jens Hagenau', speakerTitle: 'Product & Export Manager Bulk Handling', photo: 'https://www.konveyorbant.com/wp-content/uploads/2026/03/jenshegenau.jpeg', logo: BRAND_LOGOS.rulmeca },
     ];
 
     function renderSeminarTabs() {
